@@ -41,8 +41,8 @@ choose, but keep in mind that this was used for credentials that were already en
 
 3. For GCP to access you user account credentials for the first time, it will ask you to give it explicit permission
 like so:
-![Choose account for Google Cloud SDK](./imgs/choose-account.png "Choose account")
-![Grant access for Google Cloud SDK](./imgs/grant-access.png "Grant access")
+![Choose account for Google Cloud SDK](./imgs/google-account.png "Choose account")
+![Grant access for Google Cloud SDK](./imgs/authorization.png "Grant access")
 
 
 4. After choosing the Google account to work with and successfully granting permissions, you should be redirected to
@@ -51,7 +51,7 @@ like so:
 
 
 5. You should also see a similar message to this in your terminal:
-![Configured Google Cloud SDK](./imgs/configured-gc-sdk.png "Configured Google Cloud SDK")
+![Configured Google Cloud SDK](./imgs/cloud-sdk-configured.png "Configured Google Cloud SDK")
 
 
 7. In the GCP Console, enable:
@@ -116,7 +116,7 @@ root of the project named as *terraform.tfvars*, changing the property *project_
 
 16. Install the Airflow chart from the repository:
     ```bash
-    helm install airflow -f airflow-values.yaml apache-airflow --namespace airflow
+    helm upgrade --install airflow -f airflow-values.yaml apache-airflow/airflow --namespace airflow
     ```
     ***IMPORTANT***: This process might take around 5 minutes to execute, **be patient please**.
 
@@ -140,14 +140,17 @@ root of the project named as *terraform.tfvars*, changing the property *project_
         password: postgres
         port: 5432
     ```
+    **Note:** Sometimes there's an error when doing the kubectl portforward. If all of the pods are running, we might
+    just need to keep trying.
     
+
 19. Once in `localhost:8080`, you should see the Airflow login.
 ![Airflow Login](./imgs/airflow-login.png "Airflow Login")
 
 
 20. After logging in with your credentials (username and password from webserver in step 18), you should see the Airflow
 dashboard.
-![Airflow Dashboard](./imgs/airflow-dashboard.png "Airflow Dashboard")
+![Airflow Dashboard](./imgs/airflow-dag-dashboard.png "Airflow Dashboard")
 
 
 ## Don't forget to ***destroy everything*** after you're done using it!
@@ -206,8 +209,14 @@ to match your project ID.
     > Error: INSTALLATION FAILED: failed to download "apache-airflow/airflow"
    
     This error can occur do to the `helm install airflow -f airflow-values.yaml apache-airflow/airflow --namespace airflow`
-    command.
-    ***Fix:*** 
+    command. ***Fix:***
+    ```bash
+    kubectl delete namespace airflow
+    helm repo remove apache-airflow https://airflow.apache.org
+    kubectl create namespace airflow
+    helm repo add apache-airflow https://airflow.apache.org
+    helm upgrade --install airflow -f airflow-values.yaml apache-airflow/airflow --namespace airflow
+    ```
 
 ## Resources
 1. [Airflow Documentation](https://airflow.apache.org/docs/apache-airflow/stable/)
