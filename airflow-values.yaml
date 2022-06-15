@@ -31,9 +31,3 @@ logs:
     size: 1Gi
     # If using a custom storageClass, pass name here
     storageClassName: nfs-client
-
-images:
-  airflow:
-    repository: apache-airflow/airflow
-    tag: latest
-    pullPolicy: IfNotPresent
