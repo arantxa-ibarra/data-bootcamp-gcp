@@ -1,3 +1,13 @@
+terraform {
+  required_providers {
+    google = {
+      source = "hashicorp/google"
+      version = "3.77.0"
+    }
+  }
+  required_version = ">= 0.13.0"
+}
+
 module "vpc" {
   source = "./modules/vpc"
 
